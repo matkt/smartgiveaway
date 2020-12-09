@@ -1,4 +1,5 @@
 # Logs
+.openzeppelin/.lock
 logs
 *.log
 npm-debug.log*
@@ -102,3 +103,5 @@ dist
 
 # TernJS port file
 .tern-port
+
+.openzeppelin/.session
