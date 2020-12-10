@@ -75,6 +75,8 @@
 <script>
 import {FadeTransition} from 'vue2-transitions';
 import {mapState} from "vuex";
+import {GiveAwayArtifacts} from '@/assets/contracts/GiveAway';
+
 
 export default {
   components: {
@@ -108,9 +110,43 @@ export default {
   async created() {
   },
   methods: {
-    startGiveAway() {
+    async startGiveAway() {
       console.log(this.giveaway);
-    }
+      await this.deployContract();
+    },
+    async deployContract() {
+      const giveAwayContract = new window.web3.eth.Contract(GiveAwayArtifacts.abi);
+      giveAwayContract.deploy({
+        data: GiveAwayArtifacts.bytecode,
+        arguments: [this.giveaway.name, this.giveaway.maxParticipants, this.giveaway.retweetScore, this.giveaway.likeScore],
+      })
+          .send({
+            from: this.services.ethereum.selectedAddress,
+          }, function (err, transactionHash) {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log('transaction hash: ', transactionHash);
+            }
+          })
+          .on('error', this.onDeployError)
+          .on('transactionHash', this.onDeployTransactionHash)
+          .on('receipt', this.onDeployReceipt)
+          .then(this.onContractDeployed);
+    },
+    onDeployError(error) {
+      this.$notifyMessage('danger', `Cannot deploy contract: ${error}`);
+    },
+    onDeployTransactionHash(transactionHash) {
+      this.$notifyMessage('success', `Transaction hash: ${transactionHash}`);
+    },
+    onDeployReceipt(receipt) {
+      console.log(receipt.contractAddress);
+      this.$notifyMessage('success', `Contract address: ${receipt.contractAddress}`);
+    },
+    onContractDeployed(newContractInstance) {
+      this.cache.demurrageableTokenContractInstance = newContractInstance;
+    },
   },
 };
 </script>

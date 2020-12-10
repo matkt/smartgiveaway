@@ -24,7 +24,7 @@ import router from "./router/index";
 import BlackDashboard from "./plugins/blackDashboard";
 import i18n from "./i18n";
 import './registerServiceWorker';
-import BeaconClient from "@/services/BeaconClient";
+import Web3 from "web3";
 
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
@@ -64,7 +64,26 @@ function buildSettings() {
 }
 
 function buildServices(settings) {
+  initWeb3Environment();
   return {
-    ethereumClient: new BeaconClient(settings),
+    web3: window.web3,
+    ethereum: window.ethereum,
   };
+}
+
+function initWeb3Environment() {
+  console.log('initializing web3 environment');
+  const ethEnabled = () => {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      window.ethereum.enable();
+      return true;
+    }
+    return false;
+  };
+  if (!ethEnabled()) {
+    alert("Please install an Ethereum compatible browser or extension like MetaMask to use this dApp!");
+  } else {
+    console.log('web3 environment successfully loaded');
+  }
 }
