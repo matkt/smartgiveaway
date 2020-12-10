@@ -76,7 +76,7 @@
 import {FadeTransition} from 'vue2-transitions';
 import {mapState} from "vuex";
 import {GiveAwayArtifacts} from '@/assets/contracts/GiveAway';
-
+import Web3 from "web3";
 
 export default {
   components: {
@@ -97,7 +97,7 @@ export default {
         maxParticipants: 10,
         likeScore: 1,
         retweetScore: 5,
-        prize: 1000,
+        prize: 0.5,
       }
     }
   },
@@ -112,6 +112,7 @@ export default {
   methods: {
     async startGiveAway() {
       console.log(this.giveaway);
+      console.log(this.services.ethereum.selectedAddress);
       await this.deployContract();
     },
     async deployContract() {
@@ -122,6 +123,7 @@ export default {
       })
           .send({
             from: this.services.ethereum.selectedAddress,
+            value: Web3.utils.toWei(`${this.giveaway.prize}`, 'ether'),
           }, function (err, transactionHash) {
             if (err) {
               console.error(err);

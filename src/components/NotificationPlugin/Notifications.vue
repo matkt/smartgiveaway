@@ -7,7 +7,7 @@
         :key="notification.timestamp.getTime()"
         v-bind="notification"
         :clickHandler="notification.onClick"
-        timeout="5000"
+        :timeout=5000
         @close="removeNotification">
       </notification>
     </transition-group>
