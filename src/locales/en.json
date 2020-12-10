@@ -3,6 +3,7 @@
   },
   "sidebar": {
     "title": "SmartGiveAway",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "giveaway": "Give Away"
   }
 }

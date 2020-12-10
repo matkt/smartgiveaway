@@ -53,6 +53,9 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Back-End service
+[See instructions.](https://github.com/abdelhamidbakhta/smartgiveaway-backend)
+
+[Online Open API specification](https://smartgiveaway.herokuapp.com/)
 
 [sonar-url]: https://sonarcloud.io/dashboard?id=abdelhamidbakhta_smartgiveaway
 [sonar-quality-gate]: https://sonarcloud.io/api/project_badges/measure?project=abdelhamidbakhta_smartgiveaway&metric=alert_status

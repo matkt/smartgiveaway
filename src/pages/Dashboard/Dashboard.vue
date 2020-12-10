@@ -64,7 +64,7 @@
                 </base-input>
               </div>
             </div>
-            <base-button slot="footer" type="primary" fill @click="startGiveAway">Start GiveAway</base-button>
+            <base-button :loading="loading" slot="footer" type="primary" fill @click="startGiveAway">Start GiveAway</base-button>
           </card>
         </card>
       </div>
@@ -84,6 +84,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       giveaway: {
         type: 'retweet',
         typeOptions: [
@@ -98,6 +99,7 @@ export default {
         likeScore: 1,
         retweetScore: 5,
         prize: 0.5,
+        contractAddress: '',
       }
     }
   },
@@ -111,6 +113,7 @@ export default {
   },
   methods: {
     async startGiveAway() {
+      this.loading = true;
       console.log(this.giveaway);
       console.log(this.services.ethereum.selectedAddress);
       await this.deployContract();
@@ -136,8 +139,19 @@ export default {
           .on('receipt', this.onDeployReceipt)
           .then(this.onContractDeployed);
     },
+    async createGiveAwayOnBackend(){
+      try {
+        console.log('creating giveaway on backend');
+        const response = await this.services.backend.createGiveAway(this.giveaway);
+        console.log(response);
+      }catch (error){
+        this.$notifyMessage('danger', `Cannot create giveaway: ${error}`);
+      }
+      this.loading = false;
+    },
     onDeployError(error) {
       this.$notifyMessage('danger', `Cannot deploy contract: ${error}`);
+      this.loading = false;
     },
     onDeployTransactionHash(transactionHash) {
       this.$notifyMessage('success', `Transaction hash: ${transactionHash}`);
@@ -145,9 +159,11 @@ export default {
     onDeployReceipt(receipt) {
       console.log(receipt.contractAddress);
       this.$notifyMessage('success', `Contract address: ${receipt.contractAddress}`);
+      this.giveaway.contractAddress = receipt.contractAddress;
     },
     onContractDeployed(newContractInstance) {
       this.cache.demurrageableTokenContractInstance = newContractInstance;
+      this.createGiveAwayOnBackend();
     },
   },
 };

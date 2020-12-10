@@ -25,6 +25,7 @@ import BlackDashboard from "./plugins/blackDashboard";
 import i18n from "./i18n";
 import './registerServiceWorker';
 import Web3 from "web3";
+import {BackendClient} from "@/services/BackendClient";
 
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
@@ -57,8 +58,8 @@ router.push({path: '/'});
 
 function buildSettings() {
   return {
-    beacon: {
-      endpoint: 'http://18.191.74.31:5051',
+    backend: {
+      endpoint: 'https://smartgiveaway.herokuapp.com/',
     }
   };
 }
@@ -68,6 +69,7 @@ function buildServices(settings) {
   return {
     web3: window.web3,
     ethereum: window.ethereum,
+    backend: new BackendClient(settings.backend.endpoint)
   };
 }
 
