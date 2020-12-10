@@ -47,6 +47,9 @@
                   </h2>
                 </div>
                 <div class="col-md-2 pr-md-1">
+                  <base-button class="ml-2" icon @click="participateGiveAway(giveaway)">
+                    <font-awesome-icon icon="gift"/>
+                  </base-button>
                   <base-button icon @click="removeGiveAway(giveaway)">
                     <font-awesome-icon icon="trash"/>
                   </base-button>
@@ -106,6 +109,8 @@ export default {
       const response = await this.services.backend.removeGiveAway(giveaway.giveawayId);
       console.log(response);
       await this.findAllGiveAway();
+    },
+    participateGiveAway(giveaway) {
     }
   },
 };
