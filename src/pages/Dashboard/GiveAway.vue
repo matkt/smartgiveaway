@@ -114,6 +114,7 @@ export default {
       selectedGiveAway: null,
       twitterHandle: '',
       currentModalId: null,
+      loading: false,
     }
   },
   computed: {

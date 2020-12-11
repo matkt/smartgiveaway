@@ -78,9 +78,12 @@ contract GiveAway is Ownable, Pausable{
       return isUserParticipating(msg.sender);
   }
 
-    function close() public payable onlyRegisteredUser{
+  function close() public payable onlyRegisteredUser{
     _pause();
   }
 
+  function numberOfParticipants() public view returns (uint256){
+     return _listParticipants.length;
+  }
 
 }
