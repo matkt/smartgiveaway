@@ -5,6 +5,11 @@ pragma solidity >=0.6.0 <0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
+interface IPOSDAORandom {
+    function collectRoundLength() external view returns(uint256);
+    function currentSeed() external view returns(uint256);
+}
+
 contract GiveAway is Ownable, Pausable{
 
   uint public constant RETWEET_INDEX = 0;
@@ -18,7 +23,7 @@ contract GiveAway is Ownable, Pausable{
 
   struct Participant {
       bytes id;
-      uint[] status;
+      uint[2] status;
   }
 
   string public _name;
@@ -28,7 +33,11 @@ contract GiveAway is Ownable, Pausable{
 
   address [] _listParticipants;
   mapping(address => Participant) public _participants;
+  mapping(uint256 => uint256) public participantsScores;
   string public _tweetLink;
+  uint256 public winnerIndex;
+
+  IPOSDAORandom private _posdaoRandomContract; // address of RandomAuRa contract
 
   modifier onlyRegisteredUser()
     {
@@ -36,27 +45,29 @@ contract GiveAway is Ownable, Pausable{
         _;
     }
 
-  constructor (string memory name, string memory tweetLink, uint256 maxParticipants, uint256 scoreRetweet, uint256 scoreLike) public payable {
+  constructor (IPOSDAORandom randomContract, string memory name, string memory tweetLink, uint256 maxParticipants, uint256 scoreRetweet, uint256 scoreLike) public payable {
     require(msg.value>0);
+    require(randomContract != IPOSDAORandom(0));
+    _posdaoRandomContract = randomContract;
     _maxParticipants = maxParticipants;
     _name = name;
     _rules = Rules(scoreRetweet, scoreLike);
     _tweetLink = tweetLink;
   }
 
-  function participate(string memory id) public payable{
+  function participate(string memory id) public payable whenNotPaused{
       require(_listParticipants.length < _maxParticipants, "The maximum number of participants is reached");
       require(keccak256(_participants[msg.sender].id) == keccak256(bytes("")), "You have already validated your participation");
       _listParticipants.push(msg.sender);
       _participants[msg.sender].id = bytes(id) ;
   }
 
-  function retweet() public payable onlyRegisteredUser{
+  function retweet() public payable onlyRegisteredUser whenNotPaused{
       require(_participants[msg.sender].status[RETWEET_INDEX] == 0, "You can only retweet once");
       _participants[msg.sender].status[RETWEET_INDEX] = 1;
   }
 
-  function like() public payable onlyRegisteredUser {
+  function like() public payable onlyRegisteredUser whenNotPaused {
       require(_participants[msg.sender].status[LIKE_INDEX] == 0, "You can only like once");
       _participants[msg.sender].status[LIKE_INDEX] = 1;
 
@@ -80,12 +91,40 @@ contract GiveAway is Ownable, Pausable{
       return isUserParticipating(msg.sender);
   }
 
-  function close() public payable onlyRegisteredUser{
-    _pause();
-  }
-
   function numberOfParticipants() public view returns (uint256){
      return _listParticipants.length;
   }
+
+  function close() public payable onlyOwner whenNotPaused {
+      uint256 seed = _posdaoRandomContract.currentSeed();
+      uint256 scoreWinner = 0;
+      for (uint i = 0; i < _listParticipants.length; i++) {
+          uint currentScore = getScore(_listParticipants[i]);
+          participantsScores[i] = currentScore;
+          if(currentScore > scoreWinner){
+              scoreWinner = currentScore;
+          }
+      }
+      uint256[] storage winnersCandidates;
+      for (uint i = 0; i < _listParticipants.length; i++) {
+        if(participantsScores[i]==scoreWinner){
+          winnersCandidates.push(i);
+        }
+      }
+      winnerIndex = winnersCandidates[seed%winnersCandidates.length];
+      _pause();
+  }
+
+  function getWinnerId() public view whenPaused returns(string memory){
+      require(numberOfParticipants()>0, "No found participant");
+      return string(_participants[_listParticipants[winnerIndex]].id);
+  }
+  function getWinnerAddress() public view whenPaused returns(address){
+      require(numberOfParticipants()>0, "No found participant");
+      return _listParticipants[winnerIndex];
+  }
+
+
+
 
 }
