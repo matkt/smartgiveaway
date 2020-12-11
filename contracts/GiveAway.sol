@@ -28,6 +28,7 @@ contract GiveAway is Ownable, Pausable{
 
   address [] _listParticipants;
   mapping(address => Participant) public _participants;
+  string public _tweetLink;
 
   modifier onlyRegisteredUser()
     {
@@ -35,11 +36,12 @@ contract GiveAway is Ownable, Pausable{
         _;
     }
 
-  constructor (string memory name, uint256 maxParticipants, uint256 scoreRetweet, uint256 scoreLike) public payable {
+  constructor (string memory name, string memory tweetLink, uint256 maxParticipants, uint256 scoreRetweet, uint256 scoreLike) public payable {
     require(msg.value>0);
     _maxParticipants = maxParticipants;
     _name = name;
     _rules = Rules(scoreRetweet, scoreLike);
+    _tweetLink = tweetLink;
   }
 
   function participate(string memory id) public payable{
