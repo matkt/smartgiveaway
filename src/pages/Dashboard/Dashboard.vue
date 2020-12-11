@@ -24,6 +24,13 @@
             <p></p>
             <div class="row">
               <div class="col-md-4 mt-2">
+                <label>
+                  <i class="fab fa-twitter mr-2"></i>
+                  Tweet URL
+                </label>
+                <base-input v-model="giveaway.tweetLink"></base-input>
+              </div>
+              <div class="col-md-4 mt-2">
                 <label class="mr-2">Name</label>
                 <base-input v-model="giveaway.name"></base-input>
               </div>
@@ -32,21 +39,21 @@
                 <b-form-select v-model="giveaway.type"
                                :options="giveaway.typeOptions"></b-form-select>
               </div>
-              <div class="col-md-4 mt-2">
+            </div>
+            <div class="row">
+              <div class="col-md-3 mt-2">
                 <label class="mr-2">Prize</label>
                 <base-input v-model="giveaway.prize"></base-input>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-4 mt-2">
+              <div class="col-md-3 mt-2">
                 <label class="mr-2">Score for Like</label>
                 <base-input v-model="giveaway.likeScore"></base-input>
               </div>
-              <div class="col-md-4 mt-2">
+              <div class="col-md-3 mt-2">
                 <label class="mr-2">Score for Retweet</label>
                 <base-input v-model="giveaway.retweetScore"></base-input>
               </div>
-              <div class="col-md-4 mt-2">
+              <div class="col-md-3 mt-2">
                 <label class="mr-2">Max Participants</label>
                 <base-input v-model="giveaway.maxParticipants"></base-input>
               </div>
@@ -64,7 +71,8 @@
                 </base-input>
               </div>
             </div>
-            <base-button :loading="loading" slot="footer" type="primary" fill @click="startGiveAway">Start GiveAway</base-button>
+            <base-button :loading="loading" slot="footer" type="primary" fill @click="startGiveAway">Start GiveAway
+            </base-button>
           </card>
         </card>
       </div>
@@ -94,6 +102,7 @@ export default {
           {value: 'mentions', text: 'Mentions & Hashtags'},
         ],
         name: '',
+        tweetLink: '',
         description: '',
         maxParticipants: 10,
         likeScore: 1,
@@ -122,7 +131,7 @@ export default {
       const giveAwayContract = new window.web3.eth.Contract(GiveAwayArtifacts.abi);
       giveAwayContract.deploy({
         data: GiveAwayArtifacts.bytecode,
-        arguments: [this.giveaway.name, this.giveaway.maxParticipants, this.giveaway.retweetScore, this.giveaway.likeScore],
+        arguments: [this.giveaway.name, this.giveaway.tweetLink, this.giveaway.maxParticipants, this.giveaway.retweetScore, this.giveaway.likeScore],
       })
           .send({
             from: this.services.ethereum.selectedAddress,
@@ -139,12 +148,12 @@ export default {
           .on('receipt', this.onDeployReceipt)
           .then(this.onContractDeployed);
     },
-    async createGiveAwayOnBackend(){
+    async createGiveAwayOnBackend() {
       try {
         console.log('creating giveaway on backend');
         const response = await this.services.backend.createGiveAway(this.giveaway);
         console.log(response);
-      }catch (error){
+      } catch (error) {
         this.$notifyMessage('danger', `Cannot create giveaway: ${error}`);
       }
       this.loading = false;

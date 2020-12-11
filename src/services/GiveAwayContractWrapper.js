@@ -21,4 +21,22 @@ export class GiveAwayContractWrapper{
             .on('error', onError);
     }
 
+    like(onTransactionHash, onReceipt, onError){
+        this.giveaway.methods.like().send({
+            from: this.senderAddress,
+        })
+            .on('transactionHash', onTransactionHash)
+            .on('receipt', onReceipt)
+            .on('error', onError);
+    }
+
+    retweet(onTransactionHash, onReceipt, onError){
+        this.giveaway.methods.retweet().send({
+            from: this.senderAddress,
+        })
+            .on('transactionHash', onTransactionHash)
+            .on('receipt', onReceipt)
+            .on('error', onError);
+    }
+
 }

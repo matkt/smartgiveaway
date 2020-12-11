@@ -14,14 +14,14 @@
                 <div class="block block-two"></div>
                 <div class="block block-three"></div>
                 <div class="block block-four"></div>
-                <a href="#">
+                <a :href="giveaway.tweetLink">
                   <h5 class="title">{{ giveaway.name }} - {{ giveaway.giveawayId }}</h5>
+                  {{ giveaway.tweetLink }}
                 </a>
                 <pre class="description">{{ giveaway.description }} </pre>
               </div>
               <p></p>
               <div class="row">
-
                 <div class="col-md-2 pr-md-1">
                   <h5 class="card-category">Prize</h5>
                   <h2 class="card-title">
@@ -64,9 +64,6 @@
             hide-footer
         >
           <div class="row">
-            <!--div class="col-md-1 mt-2">
-              <i class="fab fa-twitter"></i>
-            </div-->
             <div class="col-md-4 mt-2">
               <label>
                 <i class="fab fa-twitter mr-2"></i>
@@ -80,7 +77,7 @@
 
           <div class="row">
             <div class="col-md-2 mr-2">
-              <base-button class="btn-primary" @click="confirmParticipation">
+              <base-button class="btn-primary" :loading="loading" @click="confirmParticipation">
                 Yes
               </base-button>
             </div>
@@ -88,6 +85,16 @@
               <base-button class="btn-danger">
                 No
               </base-button>
+            </div>
+          </div>
+        </b-modal>
+        <b-modal
+            id="modal-participate"
+            title="GiveAway Participation"
+        >
+          <div class="row">
+            <div class="col-md-12 mt-2">
+              <div id="tweet-container"></div>
             </div>
           </div>
         </b-modal>
@@ -101,6 +108,7 @@ import {FadeTransition} from 'vue2-transitions';
 import {mapState} from "vuex";
 import {GiveAwayContractWrapper} from "@/services/GiveAwayContractWrapper";
 
+require("@/widgets");
 
 export default {
   components: {
@@ -126,6 +134,8 @@ export default {
   async mounted() {
     await this.findAllGiveAway();
     this.pollData();
+  },
+  created() {
   },
   beforeDestroy() {
     clearInterval(this.polling);
@@ -156,6 +166,9 @@ export default {
       console.log('user is participating: ', isUserParticipating);
       if (!isUserParticipating) {
         this.showModal('modal-confirm-participation');
+      } else {
+        this.showModal('modal-participate');
+        this.displayTweet('1337344148878266370');
       }
     },
     getContractWrapper(contractAddress) {
@@ -165,6 +178,7 @@ export default {
           contractAddress);
     },
     confirmParticipation() {
+      this.loading = true;
       const giveawayContract = this.getContractWrapper(this.selectedGiveAway.giveawayId);
       giveawayContract.participate(
           this.twitterHandle,
@@ -180,12 +194,14 @@ export default {
     onReceipt(receipt) {
       console.log('receipt: ', receipt);
       this.$notifyMessage('success', 'Receipt received.');
+      this.loading = false;
       this.hideModal();
     },
     onError(error) {
       console.error(error);
       this.$notifyMessage('dander', error.toString());
       this.hideModal();
+      this.loading = false;
     },
     showModal(id) {
       this.currentModalId = id;
@@ -195,6 +211,19 @@ export default {
       if (this.currentModalId !== null) {
         this.$bvModal.hide(this.currentModalId);
       }
+    },
+    displayTweet(id) {
+      const twContainer = document.getElementById("test-tw");
+      console.log(twContainer);
+      twttr.widgets.createTweet(
+          id,
+          document.getElementById("test-tw"),
+          {
+            theme: "white",
+            conversation: 'none',
+            width: 250,
+          }
+      );
     }
   },
 };

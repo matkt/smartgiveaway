@@ -12,6 +12,7 @@ export class BackendClient {
             {
                 "giveawayId": giveaway.contractAddress,
                 "name": giveaway.name,
+                "tweetLink": giveaway.tweetLink,
                 "description": giveaway.description,
                 "likeScore": giveaway.likeScore,
                 "retweetScore": giveaway.retweetScore,
