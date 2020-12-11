@@ -1,4 +1,5 @@
 # Logs
+build/
 .openzeppelin/.lock
 logs
 *.log
@@ -7,7 +8,6 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .idea
-
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -106,3 +106,4 @@ dist
 .tern-port
 
 .openzeppelin/.session
+package-lock.json

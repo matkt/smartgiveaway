@@ -15,7 +15,7 @@
       "enabled": false
     },
     "manager": "openzeppelin",
-    "solcVersion": "0.7.5",
+    "solcVersion": "0.6.5",
     "artifactsDir": "build/contracts",
     "contractsDir": "contracts"
   },

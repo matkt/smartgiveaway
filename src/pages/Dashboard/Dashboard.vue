@@ -154,11 +154,12 @@ export default {
       this.loading = false;
     },
     onDeployTransactionHash(transactionHash) {
-      this.$notifyMessage('success', `Transaction hash: ${transactionHash}`);
+      console.log('transaction hash: ', transactionHash);
+      this.$notifyMessage('success', 'Transaction submitted.');
     },
     onDeployReceipt(receipt) {
-      console.log(receipt.contractAddress);
-      this.$notifyMessage('success', `Contract address: ${receipt.contractAddress}`);
+      console.log('contract address: ', receipt.contractAddress);
+      this.$notifyMessage('success', 'Contract deployed.');
       this.giveaway.contractAddress = receipt.contractAddress;
     },
     onContractDeployed(newContractInstance) {

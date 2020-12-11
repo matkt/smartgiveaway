@@ -66,6 +66,7 @@
 <script>
 import {FadeTransition} from 'vue2-transitions';
 import {mapState} from "vuex";
+import {GiveAwayContractWrapper} from "@/services/GiveAwayContractWrapper";
 
 
 export default {
@@ -110,8 +111,19 @@ export default {
       console.log(response);
       await this.findAllGiveAway();
     },
-    participateGiveAway(giveaway) {
-    }
+    async participateGiveAway(giveaway) {
+      console.log('checking if user is already participating.');
+      const giveawayContract = this.getContractWrapper(giveaway.giveawayId);
+      const isUserParticipating = await giveawayContract.amIParticipating();
+      console.log('user is participating: ', isUserParticipating);
+      
+    },
+    getContractWrapper(contractAddress){
+      return new GiveAwayContractWrapper(
+          this.services.web3,
+          this.services.ethereum.selectedAddress,
+          contractAddress);
+    },
   },
 };
 </script>

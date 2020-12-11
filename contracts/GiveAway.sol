@@ -70,7 +70,15 @@ contract GiveAway is Ownable, Pausable{
 
   }
 
-  function close() public payable onlyRegisteredUser{
+  function isUserParticipating(address participant) public view returns (bool){
+      return keccak256(_participants[participant].id) != keccak256(bytes(""));
+  }
+
+  function amIParticipating() public view returns (bool){
+      return isUserParticipating(msg.sender);
+  }
+
+    function close() public payable onlyRegisteredUser{
     _pause();
   }
 
