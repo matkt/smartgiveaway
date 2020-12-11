@@ -3,59 +3,92 @@
     <fade-transition :duration="100" mode="out-in">
       <!-- your content here -->
       <div>
+        <!--div id="wrapper-tweet">
+          <div id="tweet-container"></div>
+        </div-->
         <card>
           <h5 slot="header" class="title">Give Away</h5>
-          <div v-for="giveaway in giveaways" :key="giveaway.giveawayId">
-            <card type="user">
-              <p class="card-text">
-              </p>
-              <div class="author">
-                <div class="block block-one"></div>
-                <div class="block block-two"></div>
-                <div class="block block-three"></div>
-                <div class="block block-four"></div>
-                <a :href="giveaway.tweetLink">
-                  <h5 class="title">{{ giveaway.name }} - {{ giveaway.giveawayId }}</h5>
-                  {{ giveaway.tweetLink }}
-                </a>
-                <pre class="description">{{ giveaway.description }} </pre>
-              </div>
-              <p></p>
-              <div class="row">
-                <div class="col-md-2 pr-md-1">
-                  <h5 class="card-category">Prize</h5>
-                  <h2 class="card-title">
-                    {{ giveaway.prize }}
-                  </h2>
+          <div id="wrapper-tweet">
+            <div v-for="giveaway in giveaways" :key="giveaway.giveawayId">
+              <card type="user">
+                <p class="card-text">
+                </p>
+                <div class="author">
+                  <div class="block block-one"></div>
+                  <div class="block block-two"></div>
+                  <div class="block block-three"></div>
+                  <div class="block block-four"></div>
+                  <!--a :href="giveaway.tweetLink">
+                    <h5 class="title">{{ giveaway.name }} - {{ giveaway.giveawayId }}</h5>
+                    {{ giveaway.tweetLink }}
+                  </a>
+                  <pre class="description">{{ giveaway.description }} </pre-->
                 </div>
-                <div class="col-md-2 pr-md-1">
-                  <h5 class="card-category">Max Participants</h5>
-                  <h2 class="card-title">
-                    {{ giveaway.maxParticipants }}
-                  </h2>
+                <p></p>
+                <div class="row">
+                  <div class="col-md-4 pr-md-1">
+                    <div :id="tweetDivId(giveaway.giveawayId)"></div>
+                  </div>
+                  <div class="col-md-4 pr-md-1">
+                    <div class="row">
+                      <div class="col-md-6 pr-md-1 mt-4">
+                        <h5 class="card-category">Prize</h5>
+                        <h2 class="card-title">
+                          {{ giveaway.prize }}
+                        </h2>
+                      </div>
+                      <div class="col-md-6 pr-md-1 mt-4">
+                        <h5 class="card-category">Max Participants</h5>
+                        <h2 class="card-title">
+                          {{ giveaway.maxParticipants }}
+                        </h2>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 pr-md-1 mt-4">
+                        <h5 class="card-category">Like bonus</h5>
+                        <h2 class="card-title">
+                          {{ giveaway.likeScore }}
+                        </h2>
+                      </div>
+                      <div class="col-md-6 pr-md-1 mt-4">
+                        <h5 class="card-category">Retweet bonus</h5>
+                        <h2 class="card-title">
+                          {{ giveaway.retweetScore }}
+                        </h2>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 pr-md-1">
+                    <div class="row">
+                      <div class="col-md-3 pr-md-1 mt-4">
+                        <base-button class="ml-2" icon @click="participateGiveAway(giveaway)">
+                          <font-awesome-icon icon="plus"/>
+                        </base-button>
+                      </div>
+                      <div class="col-md-3 pr-md-1 mt-4">
+                        <base-button icon @click="removeGiveAway(giveaway)">
+                          <font-awesome-icon icon="trash"/>
+                        </base-button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3 pr-md-1 mt-4">
+                        <base-button class="ml-2" icon @click="likeGiveaway(giveaway)">
+                          <font-awesome-icon icon="heart"/>
+                        </base-button>
+                      </div>
+                      <div class="col-md-3 pr-md-1 mt-4">
+                        <base-button icon @click="retweetGiveaway(giveaway)">
+                          <i class="fab fa-twitter"></i>
+                        </base-button>
+                      </div>
+                    </div>
+
+                  </div>
                 </div>
-                <div class="col-md-2 pr-md-1">
-                  <h5 class="card-category">Like bonus</h5>
-                  <h2 class="card-title">
-                    {{ giveaway.likeScore }}
-                  </h2>
-                </div>
-                <div class="col-md-2 pr-md-1">
-                  <h5 class="card-category">Retweet bonus</h5>
-                  <h2 class="card-title">
-                    {{ giveaway.retweetScore }}
-                  </h2>
-                </div>
-                <div class="col-md-2 pr-md-1">
-                  <base-button class="ml-2" icon @click="participateGiveAway(giveaway)">
-                    <font-awesome-icon icon="gift"/>
-                  </base-button>
-                  <base-button icon @click="removeGiveAway(giveaway)">
-                    <font-awesome-icon icon="trash"/>
-                  </base-button>
-                </div>
-              </div>
-            </card>
+              </card>
+            </div>
           </div>
         </card>
         <b-modal
@@ -85,16 +118,6 @@
               <base-button class="btn-danger">
                 No
               </base-button>
-            </div>
-          </div>
-        </b-modal>
-        <b-modal
-            id="modal-participate"
-            title="GiveAway Participation"
-        >
-          <div class="row">
-            <div class="col-md-12 mt-2">
-              <div id="tweet-container"></div>
             </div>
           </div>
         </b-modal>
@@ -133,9 +156,9 @@ export default {
   },
   async mounted() {
     await this.findAllGiveAway();
-    this.pollData();
-  },
-  created() {
+    this.$nextTick(() => {
+      this.test();
+    });
   },
   beforeDestroy() {
     clearInterval(this.polling);
@@ -143,6 +166,9 @@ export default {
   methods: {
     pollData() {
       this.polling = setInterval(this.findAllGiveAway, 2000);
+    },
+    tweetDivId(giveawayId) {
+      return `tweet-${giveawayId}`;
     },
     async findAllGiveAway() {
       const response = await this.services.backend.findAllGiveAway();
@@ -166,10 +192,23 @@ export default {
       console.log('user is participating: ', isUserParticipating);
       if (!isUserParticipating) {
         this.showModal('modal-confirm-participation');
-      } else {
-        this.showModal('modal-participate');
-        this.displayTweet('1337344148878266370');
       }
+    },
+    async likeGiveaway(giveaway){
+      const giveawayContract = this.getContractWrapper(giveaway.giveawayId);
+      giveawayContract.like(
+          this.onTransactionHash,
+          this.onReceipt,
+          this.onError
+      );
+    },
+    async retweetGiveaway(giveaway){
+      const giveawayContract = this.getContractWrapper(giveaway.giveawayId);
+      giveawayContract.retweet(
+          this.onTransactionHash,
+          this.onReceipt,
+          this.onError
+      );
     },
     getContractWrapper(contractAddress) {
       return new GiveAwayContractWrapper(
@@ -212,18 +251,29 @@ export default {
         this.$bvModal.hide(this.currentModalId);
       }
     },
-    displayTweet(id) {
-      const twContainer = document.getElementById("test-tw");
-      console.log(twContainer);
+    test() {
+      this.giveaways.forEach(
+          giveaway => {
+            this.displayTweet(giveaway.giveawayId, this.tweetIdFromUrl(giveaway.tweetLink));
+          }
+      );
+    },
+    displayTweet(giveawayId, id) {
+      const twContainer = document.getElementById(this.tweetDivId(giveawayId));
       twttr.widgets.createTweet(
           id,
-          document.getElementById("test-tw"),
+          twContainer,
           {
             theme: "white",
             conversation: 'none',
-            width: 250,
+            cards: 'hidden',
+            align: 'left'
           }
       );
+    },
+    tweetIdFromUrl(tweetUrl) {
+      const res = tweetUrl.split('/');
+      return res[res.length - 1];
     }
   },
 };
