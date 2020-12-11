@@ -116,7 +116,7 @@ export default {
       const giveawayContract = this.getContractWrapper(giveaway.giveawayId);
       const isUserParticipating = await giveawayContract.amIParticipating();
       console.log('user is participating: ', isUserParticipating);
-      
+
     },
     getContractWrapper(contractAddress){
       return new GiveAwayContractWrapper(

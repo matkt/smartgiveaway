@@ -1,6 +1,6 @@
 [![smartgiveaway Actions Status](https://github.com/abdelhamidbakhta/smartgiveaway/workflows/smartgiveaway-ci/badge.svg)](https://github.com/abdelhamidbakhta/smartgiveaway/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/abdelhamidbakhta/smartgiveaway/blob/master/LICENSE)
-[![sonar-quality-gate][sonar-quality-gate]][sonar-url] [![sonar-coverage][sonar-coverage]][sonar-url] [![sonar-bugs][sonar-bugs]][sonar-url] [![sonar-vulnerabilities][sonar-vulnerabilities]][sonar-url]
+[![sonar-quality-gate][sonar-quality-gate]][sonar-url]  [![sonar-bugs][sonar-bugs]][sonar-url] [![sonar-vulnerabilities][sonar-vulnerabilities]][sonar-url]
 
 # Smart Giveaway
 [Build On XDai: Applications & Bridges GR8 Hackathon](https://gitcoin.co/issue/xdaichain/site/9/100024347)
@@ -59,6 +59,5 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 [sonar-url]: https://sonarcloud.io/dashboard?id=abdelhamidbakhta_smartgiveaway
 [sonar-quality-gate]: https://sonarcloud.io/api/project_badges/measure?project=abdelhamidbakhta_smartgiveaway&metric=alert_status
-[sonar-coverage]: https://sonarcloud.io/api/project_badges/measure?project=abdelhamidbakhta_smartgiveaway&metric=coverage
 [sonar-bugs]: https://sonarcloud.io/api/project_badges/measure?project=abdelhamidbakhta_smartgiveaway&metric=bugs
 [sonar-vulnerabilities]: https://sonarcloud.io/api/project_badges/measure?project=abdelhamidbakhta_smartgiveaway&metric=vulnerabilities
