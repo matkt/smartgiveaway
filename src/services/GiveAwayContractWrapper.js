@@ -12,4 +12,13 @@ export class GiveAwayContractWrapper{
         });
     }
 
+    participate(participantId, onTransactionHash, onReceipt, onError){
+        this.giveaway.methods.participate(participantId).send({
+            from: this.senderAddress,
+        })
+            .on('transactionHash', onTransactionHash)
+            .on('receipt', onReceipt)
+            .on('error', onError);
+    }
+
 }

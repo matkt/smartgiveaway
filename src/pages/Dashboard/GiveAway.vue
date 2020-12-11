@@ -58,6 +58,39 @@
             </card>
           </div>
         </card>
+        <b-modal
+            id="modal-confirm-participation"
+            title="GiveAway Participation"
+            hide-footer
+        >
+          <div class="row">
+            <!--div class="col-md-1 mt-2">
+              <i class="fab fa-twitter"></i>
+            </div-->
+            <div class="col-md-4 mt-2">
+              <label>
+                <i class="fab fa-twitter mr-2"></i>
+                <input v-model="twitterHandle">
+              </label>
+            </div>
+          </div>
+          <div class="row ml-2">
+            Do you want to participate to this Give Away ?
+          </div>
+
+          <div class="row">
+            <div class="col-md-2 mr-2">
+              <base-button class="btn-primary" @click="confirmParticipation">
+                Yes
+              </base-button>
+            </div>
+            <div class="col-md-2 mr-2">
+              <base-button class="btn-danger">
+                No
+              </base-button>
+            </div>
+          </div>
+        </b-modal>
       </div>
       <router-view></router-view>
     </fade-transition>
@@ -78,6 +111,9 @@ export default {
       currentFindAllResponse: '',
       giveaways: [],
       polling: null,
+      selectedGiveAway: null,
+      twitterHandle: '',
+      currentModalId: null,
     }
   },
   computed: {
@@ -99,7 +135,7 @@ export default {
     },
     async findAllGiveAway() {
       const response = await this.services.backend.findAllGiveAway();
-      if(this.currentFindAllResponse !== JSON.stringify(response)) {
+      if (this.currentFindAllResponse !== JSON.stringify(response)) {
         if (Array.isArray(response.data) && response.data.length > 0) {
           this.giveaways = response.data;
           this.currentFindAllResponse = JSON.stringify(response);
@@ -113,17 +149,52 @@ export default {
     },
     async participateGiveAway(giveaway) {
       console.log('checking if user is already participating.');
+      this.selectedGiveAway = giveaway;
       const giveawayContract = this.getContractWrapper(giveaway.giveawayId);
       const isUserParticipating = await giveawayContract.amIParticipating();
       console.log('user is participating: ', isUserParticipating);
-
+      if (!isUserParticipating) {
+        this.showModal('modal-confirm-participation');
+      }
     },
-    getContractWrapper(contractAddress){
+    getContractWrapper(contractAddress) {
       return new GiveAwayContractWrapper(
           this.services.web3,
           this.services.ethereum.selectedAddress,
           contractAddress);
     },
+    confirmParticipation() {
+      const giveawayContract = this.getContractWrapper(this.selectedGiveAway.giveawayId);
+      giveawayContract.participate(
+          this.twitterHandle,
+          this.onTransactionHash,
+          this.onReceipt,
+          this.onError
+      );
+    },
+    onTransactionHash(transactionHash) {
+      console.log('transaction hash: ', transactionHash);
+      this.$notifyMessage('success', 'Transaction submitted.');
+    },
+    onReceipt(receipt) {
+      console.log('receipt: ', receipt);
+      this.$notifyMessage('success', 'Receipt received.');
+      this.hideModal();
+    },
+    onError(error) {
+      console.error(error);
+      this.$notifyMessage('dander', error.toString());
+      this.hideModal();
+    },
+    showModal(id) {
+      this.currentModalId = id;
+      this.$bvModal.show(this.currentModalId);
+    },
+    hideModal() {
+      if (this.currentModalId !== null) {
+        this.$bvModal.hide(this.currentModalId);
+      }
+    }
   },
 };
 </script>
